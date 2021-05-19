@@ -78,11 +78,11 @@ void display_stack()
     }
     else{
         while(bantu!=NULL){
-            printf("BARANG\n");
-            printf("Nama Pengirim :  %s\n", bantu->pengirim);
-            printf("Nama Penerima :  %s\n", bantu->penerima);
-            printf("Alamat Penerima :  %s\n", bantu->alamat);
-            printf("Berat Barang :  %d\n", bantu->data);
+            printf("\tBARANG\n");
+            printf("\tNama Pengirim :  %s\n", bantu->pengirim);
+            printf("\tNama Penerima :  %s\n", bantu->penerima);
+            printf("\tAlamat Penerima :  %s\n", bantu->alamat);
+            printf("\tBerat Barang :  %d\n", bantu->data);
             bantu=bantu->prev;
         }
     }
@@ -107,16 +107,16 @@ void enqueue(queue *q)
     {
         barang *tmp;
         tmp = malloc(sizeof(barang));
-        printf("Masukkan nama pengirim : ");
+        printf("\tMasukkan nama pengirim : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->pengirim);
-        printf("Masukkan nama penerima : ");
+        printf("\tMasukkan nama penerima : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->penerima);
-        printf("Masukkan alamat penerima : ");
+        printf("\tMasukkan alamat penerima : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->alamat);
-        printf("Masukkan berat : ");
+        printf("\tMasukkan berat : ");
         scanf("%d", &(tmp->data));
         tmp->next = NULL;
         if(!isempty(q))
@@ -155,12 +155,12 @@ void display(barang *head)
     }
     else
     {   
-        printf("DATA PENGIRIM DAN PENERIMA\n");
-        printf("NAMA PENGIRIM : %s\n", head->pengirim);
-        printf("NAMA PENERIMA : %s\n", head->penerima);
-        printf("ALAMAT PENERIMA : %s\n", head->alamat);
-        printf("BERAT BARANG : %d\n", head -> data);
-        printf("===================================\n");
+        printf("\tDATA PENGIRIM DAN PENERIMA\n");
+        printf("\tNAMA PENGIRIM : %s\n", head->pengirim);
+        printf("\tNAMA PENERIMA : %s\n", head->penerima);
+        printf("\tALAMAT PENERIMA : %s\n", head->alamat);
+        printf("\tBERAT BARANG : %d\n", head -> data);
+        printf("\t===================================\n");
         display(head->next);
     }
 }
@@ -172,20 +172,24 @@ int main()
     q = malloc(sizeof(queue));
     initialize(q);
     while(1){
-        printf("GUDANG JAWA\n");
-        printf("1. Input barang ke gudang\n");
-        printf("2. Masukkan barang ke truck\n");
-        printf("3. Lihat barang di antrian\n");
-        printf("4. Lihat barang di truk\n");
-        printf("5. Cari barang\n");
-        printf("6. Keluar\n");  
-        printf("Input : ");
+        printf("\t=================================\n");
+        printf("\t           GUDANG JAWA           \n");
+        printf("\t=================================\n");
+        printf("\t 1. Input barang ke gudang\n");
+        printf("\t 2. Masukkan barang ke truck\n");
+        printf("\t 3. Lihat barang di antrian\n");
+        printf("\t 4. Lihat barang di truk\n");
+        printf("\t 5. Kirim barang ke Bali\n");
+        printf("\t 6. Cari barang\n");
+        printf("\t 7. Keluar\n");  
+        printf("\t=================================\n");
+        printf("\t Input : ");
         scanf("%d", &ch);
         if(ch==1){
             printf("Masukkan data dari barang\n");
             enqueue(q);
         }
-        if(ch==2){
+        else if(ch==2){
             barang *bantu;
             bantu = q->front;
             do{
@@ -201,6 +205,9 @@ int main()
             display_stack();
         }
         else if(ch==5){
+            printf("BARANG TELAH DIKIRIM KE BALI\n");
+        }
+        else if(ch==7){
             break;
         }
     }
