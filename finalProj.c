@@ -177,8 +177,8 @@ int main()
         printf("2. Masukkan barang ke truck\n");
         printf("3. Lihat barang di antrian\n");
         printf("4. Lihat barang di truk\n");
-        printf("4. Cari barang\n");
-        printf("5. Keluar\n");  
+        printf("5. Cari barang\n");
+        printf("6. Keluar\n");  
         printf("Input : ");
         scanf("%d", &ch);
         if(ch==1){
