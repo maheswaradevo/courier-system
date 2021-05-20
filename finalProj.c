@@ -7,15 +7,13 @@
 #define MAX_TRUCK 3
 #define TRUCK_SIZE 10
 
-typedef struct barang
-{
+typedef struct barang{
     int data;
     char pengirim[50], penerima[50], alamat[50];
     struct barang *next;
 }barang;
 
-typedef struct barang_list
-{
+typedef struct barang_list{
     int data;
     char pengirim[50], penerima[50], alamat[50];
     struct barang_list *next;
@@ -23,8 +21,7 @@ typedef struct barang_list
 }barang_list;
 barang_list *top=NULL;
 
-typedef struct queue
-{
+typedef struct queue{
     int count;
     barang *front;
     barang *rear;
@@ -87,7 +84,6 @@ void display_stack()
         }
     }
 }
-
 
 void initialize(queue *q)
 {
@@ -159,16 +155,31 @@ void display(barang *head)
         printf("\tNAMA PENGIRIM : %s\n", head->pengirim);
         printf("\tNAMA PENERIMA : %s\n", head->penerima);
         printf("\tALAMAT PENERIMA : %s\n", head->alamat);
-        printf("\tBERAT BARANG : %d\n", head -> data);
+        printf("\tBERAT BARANG : %d\n", head->data);
         printf("\t===================================\n");
         display(head->next);
     }
 }
 
+void sort(barang *unsorted) {
+    int banyak_unsorted = 10;
+    barang temp;
+    for (int i = banyak_unsorted - 1; i > 0;i--) {
+        for(int j = 0 ; j < i ; j++) {
+            if (unsorted[j].data < unsorted[j + 1].data) {
+                temp = unsorted[j];
+                unsorted[j] = unsorted[j+1];
+                unsorted[j+1] = temp;
+            }
+        }
+    }
+}
+
 int main()
 {
-    int ch;
+    int ch, choice;
     queue *q;
+    barang *b;
     q = malloc(sizeof(queue));
     initialize(q);
     while(1){
@@ -206,6 +217,31 @@ int main()
         }
         else if(ch==5){
             printf("BARANG TELAH DIKIRIM KE BALI\n");
+            printf("Tekan enter untuk melanjutkan...\n");
+            system("pause");
+            while(1){
+                printf("\t=================================\n");
+                printf("\t           GUDANG BALI           \n");
+                printf("\t=================================\n");
+                printf("\t 1. Cek barang di truk\n");
+                printf("\t 2. Turunkan barang ke gudang\n");
+                printf("\t 3. Urutkan barang\n");
+                printf("\t 4. Keluar\n");
+                printf("\t Input : ");
+                scanf("%d", &choice);
+                if(choice == 1){
+                    display_stack();
+                }
+                else if(choice == 2){
+                    pop();
+                }
+                else if(choice == 3){
+                    sort(b);
+                }
+                else if(choice == 4){
+                    break;
+                }
+            }
         }
         else if(ch==7){
             break;
