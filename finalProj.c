@@ -8,25 +8,25 @@
 #define MAX_TRUCK 3
 #define TRUCK_SIZE 10
 
-typedef struct barang{
+typedef struct barang_queue{
     int data;
     char pengirim[50], penerima[50], alamat[50];
-    struct barang *next;
-}barang;
-barang first, *new;
+    struct barang_queue *next;
+}barang_queue;
+barang_queue first, *new;
 
-typedef struct barang_list{
+typedef struct barang_stack{
     int data;
     char pengirim[50], penerima[50], alamat[50];
-    struct barang_list *next;
-    struct barang_list *prev;
-}barang_list;
-barang_list *top=NULL;
+    struct barang_stack *next;
+    struct barang_stack *prev;
+}barang_stack;
+barang_stack *top=NULL;
 
 typedef struct queue{
     int count;
-    barang *front;
-    barang *rear;
+    barang_queue *front;
+    barang_queue *rear;
 }queue;
 
 int isEmpty()
@@ -39,7 +39,7 @@ int isEmpty()
 
 void push(int berat, char kirim[], char terima[], char alamat[])
 {
-    barang_list *temp = (barang_list*)malloc(sizeof(barang_list));
+    barang_stack *temp = (barang_stack*)malloc(sizeof(barang_stack));
     temp->data = berat;
     strcpy(temp->pengirim, kirim);
     strcpy(temp->penerima, terima);
@@ -56,7 +56,7 @@ void push(int berat, char kirim[], char terima[], char alamat[])
 
 void pop()
 {
-    barang_list *hapus;
+    barang_stack *hapus;
     hapus = top;
     if(isEmpty()==1){
         printf("Tidak ada barang\n");
@@ -69,7 +69,7 @@ void pop()
 
 void display_stack()
 {
-    barang_list *bantu;
+    barang_stack *bantu;
     bantu = top;
     printf("Barang : \n");
     if(isEmpty() == 1){
@@ -103,8 +103,8 @@ void enqueue(queue *q)
 {
     if (q->count < TRUCK_SIZE)
     {
-        barang *tmp;
-        tmp = malloc(sizeof(barang));
+        barang_queue *tmp;
+        tmp = malloc(sizeof(barang_queue));
         printf("\tMasukkan nama pengirim : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->pengirim);
@@ -136,7 +136,7 @@ void enqueue(queue *q)
 
 int dequeue(queue *q)
 {
-    barang *tmp;
+    barang_queue *tmp;
     int n = q->front->data;
     tmp = q->front;
     q->front = q->front->next;
@@ -145,7 +145,7 @@ int dequeue(queue *q)
     return(n);
 }
 
-void display(barang *head)
+void display(barang_queue *head)
 {
     if(head==NULL){
         printf("NULL\n");
@@ -161,9 +161,9 @@ void display(barang *head)
     }
 }
 
-void sort(barang *unsorted) {
+void sort(barang_queue *unsorted) {
     int banyak_unsorted = 10;
-    barang temp;
+    barang_queue temp;
     for (int i = banyak_unsorted - 1; i > 0;i--) {
         for(int j = 0 ; j < i ; j++) {
             if (unsorted[j].data < unsorted[j + 1].data) {
@@ -178,33 +178,33 @@ void sort(barang *unsorted) {
     }
 }
 
-// int search(char item[10])
+int search(char item[10])
+{
+    int count = 1;
+    new = &first;
+    while(new->next!=NULL){
+        if(strcmp(item, new->pengirim)==0){
+            break;
+        }
+        else{
+            count++;
+            new = new->next;
+        }
+    }
+    return count;
+}
+
+// bool search(barang_queue *head, char item[10])
 // {
-//     int count = 1;
-//     new = &first;
-//     while(new->next!=NULL){
-//         if(strcmp(item, new->pengirim)==0){
-//             break;
-//         }
-//         else{
-//             count++;
-//             new = new->next;
-//         }
+//     if(head==NULL){
+//         return false;
 //     }
-//     return count;
+//     if(strcmp(head->pengirim, item)==0){
+//         return true;
+//     }
+//     return search(head->next, item);
 // }
 
-bool search(barang *head, char item[10])
-{
-    barang *current = head;
-    while(current != NULL){
-        if(strcmp(current->pengirim, item)==0){
-            return true;
-        }
-        current = current -> next;
-    }
-    return false;
-}
 // void search(char s, barang *head)
 // {
 //     barang *p = head;
@@ -219,10 +219,11 @@ bool search(barang *head, char item[10])
 
 int main()
 {
-    int ch, choice, item, pos;
+    int ch, choice, pos;
+    char item[50];
     char s[50][50];
     queue *q;
-    barang *b;
+    barang_queue *b;
     q = malloc(sizeof(queue));
     initialize(q);
     while(1){
@@ -244,7 +245,7 @@ int main()
             enqueue(q);
         }
         else if(ch==2){
-            barang *bantu;
+            barang_queue *bantu;
             bantu = q->front;
             do{
                 push(bantu->data, bantu->pengirim, bantu->penerima, bantu->alamat);
@@ -287,30 +288,21 @@ int main()
             }
         }
         else if(ch==6){
-            // printf("Masukan berat barang yang ingin dicari : ");
-            // fflush(stdin);
-            // scanf("%[^\n]s", &item);
-            // pos = search(item);
-            // if(pos<=3){
-            //     printf("Barang ada pada posisi ke-%d\n", pos);
-            // }
-            // else{
-            //     printf("Barang tidak ditemukan\n");
-            // }
+            printf("Masukan nama pengirim barang yang ingin dicari : ");
+            fflush(stdin);
+            scanf("%[^\n]s", &item);
+            pos = search(item);
+            if(pos<=3){
+                printf("Barang ada pada posisi ke-%d\n", pos);
+            }
+            else{
+                printf("Barang tidak ditemukan\n");
+            }
 
             // printf("Masukkan nama pengirim : ");
             // ffush(stdin);
             // scanf("%[^\n]s", &s);
             // search(s,b);
-            printf("Masukkan nama pengirim : ");
-            fflush(stdin);
-            scanf("%[^\n]s", &item);
-            if(search(q, item)==TRUE){
-                printf("Barang ada di truk\n");
-            }
-            else{
-                printf("Barang tidak ada di truk\n");
-            }
         }
         else if(ch==7){
             break;
