@@ -130,7 +130,7 @@ void enqueue(queue *q)
     }
     else
     {
-        printf("Antrian sudah full!\n");
+        printf("\tAntrian sudah full!\n");
     }
 }
 
@@ -148,7 +148,7 @@ int dequeue(queue *q)
 void display(barang_queue *head)
 {
     if(head==NULL){
-        printf("NULL\n");
+        printf("\tNULL\n");
     }
     else{
         printf("\tDATA PENGIRIM DAN PENERIMA\n");
@@ -178,10 +178,10 @@ void sort(barang_queue *unsorted) {
     }
 }
 
-int search(char item[10])
+int search(char item[10], barang_queue **b)
 {
     int count = 1;
-    new = &first;
+    *new = **b;
     while(new->next!=NULL){
         if(strcmp(item, new->pengirim)==0){
             break;
@@ -262,7 +262,7 @@ int main()
         }
         else if(ch==5){
             printf("\tBARANG TELAH DIKIRIM KE BALI\n");
-            system("\tpause");
+            system("pause");
             while(1){
                 printf("\t=================================\n");
                 printf("\t           GUDANG BALI           \n");
@@ -270,7 +270,8 @@ int main()
                 printf("\t 1. Cek barang di truk\n");
                 printf("\t 2. Turunkan barang ke gudang\n");
                 printf("\t 3. Urutkan barang\n");
-                printf("\t 4. Keluar\n");
+                printf("\t 4. Kirim barang ke pelanggan\n");
+                printf("\t 5. Keluar\n");
                 printf("\t Input : ");
                 scanf("%d", &choice);
                 if(choice == 1){
@@ -282,7 +283,7 @@ int main()
                 else if(choice == 3){
                     sort(b);
                 }
-                else if(choice == 4){
+                else if(choice == 5){
                     break;
                 }
             }
@@ -291,7 +292,7 @@ int main()
             printf("Masukan nama pengirim barang yang ingin dicari : ");
             fflush(stdin);
             scanf("%[^\n]s", &item);
-            pos = search(item);
+            pos = search(item, &b);
             if(pos<=3){
                 printf("Barang ada pada posisi ke-%d\n", pos);
             }
