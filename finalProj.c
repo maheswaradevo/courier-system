@@ -40,7 +40,7 @@ int isEmpty()
 
 void hold()
 {
-    printf("\tTekan enter untuk melanjutkan\n");
+    printf("\t Tekan enter untuk melanjutkan\n");
     getch();
 }
 
@@ -66,7 +66,7 @@ void pop()
     barang_stack *hapus;
     hapus = top;
     if(isEmpty()==1){
-        printf("\tTidak ada barang\n");
+        printf("\t Tidak ada barang\n");
     }
     else{
         top = top -> prev;
@@ -78,17 +78,17 @@ void display_stack()
 {
     barang_stack *bantu;
     bantu = top;
-    printf("\tBarang : \n");
+    printf("\t Barang : \n");
     if(isEmpty() == 1){
-        printf("\t--KOSONG--\n");
+        printf("\t --KOSONG--\n");
     }
     else{
         while(bantu!=NULL){
-            printf("\tBARANG\n");
-            printf("\tNama Pengirim :  %s\n", bantu->pengirim);
-            printf("\tNama Penerima :  %s\n", bantu->penerima);
-            printf("\tAlamat Penerima :  %s\n", bantu->alamat);
-            printf("\tBerat Barang :  %d\n", bantu->data);
+            printf("\t BARANG\n");
+            printf("\t Nama Pengirim :  %s\n", bantu->pengirim);
+            printf("\t Nama Penerima :  %s\n", bantu->penerima);
+            printf("\t Alamat Penerima :  %s\n", bantu->alamat);
+            printf("\t Berat Barang :  %d\n", bantu->data);
             bantu=bantu->prev;
         }
     }
@@ -112,16 +112,16 @@ void enqueue(queue *q)
     {
         barang_queue *tmp;
         tmp = malloc(sizeof(barang_queue));
-        printf("\tMasukkan nama pengirim : ");
+        printf("\t Masukkan nama pengirim : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->pengirim);
-        printf("\tMasukkan nama penerima : ");
+        printf("\t Masukkan nama penerima : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->penerima);
-        printf("\tMasukkan alamat penerima : ");
+        printf("\t Masukkan alamat penerima : ");
         fflush(stdin);
         scanf("%[^\n]s", tmp->alamat);
-        printf("\tMasukkan berat : ");
+        printf("\t Masukkan berat : ");
         scanf("%d", &(tmp->data));
         tmp->next = NULL;
         if(!isempty(q))
@@ -137,7 +137,7 @@ void enqueue(queue *q)
     }
     else
     {
-        printf("\tAntrian sudah full!\n");
+        printf("\t Antrian sudah full!\n");
     }
 }
 
@@ -155,15 +155,15 @@ int dequeue(queue *q)
 void display(barang_queue *head)
 {
     if(head==NULL){
-        printf("\tNULL\n");
+        printf("\t NULL\n");
     }
     else{
-        printf("\tDATA PENGIRIM DAN PENERIMA\n");
-        printf("\tNAMA PENGIRIM : %s\n", head->pengirim);
-        printf("\tNAMA PENERIMA : %s\n", head->penerima);
-        printf("\tALAMAT PENERIMA : %s\n", head->alamat);
-        printf("\tBERAT BARANG : %d\n", head->data);
-        printf("\t===================================\n");
+        printf("\t DATA PENGIRIM DAN PENERIMA\n");
+        printf("\t NAMA PENGIRIM : %s\n", head->pengirim);
+        printf("\t NAMA PENERIMA : %s\n", head->penerima);
+        printf("\t ALAMAT PENERIMA : %s\n", head->alamat);
+        printf("\t BERAT BARANG : %d\n", head->data);
+        printf("\t ===================================\n");
         display(head->next);
     }
 }
@@ -192,17 +192,17 @@ void search(barang_queue *start, char *dicari)
     p = start;
     while(p!=NULL){
         if(strcmp(p->pengirim, dicari)==0){
-            printf("\tBarang milik %s ditemukan diposisi %d\n", dicari, pos);
+            printf("\t Barang milik %s ditemukan diposisi %d\n", dicari, pos);
             return;
         }
         p=p->next;
         pos++;
     }
-    printf("Barang milik %s tidak ditemukan\n", dicari);
+    printf("\t Barang milik %s tidak ditemukan\n", dicari);
 }
 
 int main()
-{
+{   
     int ch, choice, pos;
     char item[50];
     char s[50][50];
@@ -226,7 +226,7 @@ int main()
         printf("\t Input : ");
         scanf("%d", &ch);
         if(ch==1){
-            printf("\tMasukkan data dari barang\n");
+            printf("\t Masukkan data dari barang\n");
             enqueue(q);
         }
         else if(ch==2){
@@ -236,17 +236,17 @@ int main()
                 push(bantu->data, bantu->pengirim, bantu->penerima, bantu->alamat);
                 bantu = bantu->next;
             }while(bantu!=NULL);
-            printf("\tBarang berhasil dimasukan ke truk\n");
+            printf("\t Barang berhasil dimasukan ke truk\n");
         }
         else if(ch==3){
-            printf("\t===================================\n");
+            printf("\t ===================================\n");
             display(q->front);
         }
         else if(ch==4){
             display_stack();
         }
         else if(ch==5){
-            printf("\tBARANG TELAH DIKIRIM KE BALI\n");
+            printf("\t BARANG TELAH DIKIRIM KE BALI\n");
             hold();
             while(1){
                 printf("\t=================================\n");
@@ -274,7 +274,7 @@ int main()
             }
         }
         else if(ch==6){
-            printf("\tMasukkan nama pengirim : ");
+            printf("\t Masukkan nama pengirim : ");
             fflush(stdin);
             scanf("%[^\n]s", &item);
             search(q->front, item);
