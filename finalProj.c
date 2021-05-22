@@ -3,6 +3,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #define TRUE 1
 #define FALSE 0
 #define MAX_TRUCK 3
@@ -14,7 +15,7 @@ typedef struct barang_queue{
     struct barang_queue *next;
 }barang_queue;
 barang_queue first, *new;
-
+barang_queue *gudang = NULL;
 typedef struct barang_stack{
     int data;
     char pengirim[50], penerima[50], alamat[50];
@@ -35,6 +36,12 @@ int isEmpty()
         return 1;
     else
         return 0;
+}
+
+void hold()
+{
+    printf("\tTekan enter untuk melanjutkan\n");
+    getch();
 }
 
 void push(int berat, char kirim[], char terima[], char alamat[])
@@ -59,7 +66,7 @@ void pop()
     barang_stack *hapus;
     hapus = top;
     if(isEmpty()==1){
-        printf("Tidak ada barang\n");
+        printf("\tTidak ada barang\n");
     }
     else{
         top = top -> prev;
@@ -71,9 +78,9 @@ void display_stack()
 {
     barang_stack *bantu;
     bantu = top;
-    printf("Barang : \n");
+    printf("\tBarang : \n");
     if(isEmpty() == 1){
-        printf("--KOSONG--\n");
+        printf("\t--KOSONG--\n");
     }
     else{
         while(bantu!=NULL){
@@ -178,23 +185,39 @@ void sort(barang_queue *unsorted) {
     }
 }
 
-int search(char item[10], barang_queue **b)
+// int search(char item[20], barang_queue **b)
+// {
+//     int count = 1;
+//     *new = **b;
+//     while(new->next!=NULL){
+//         if(strcmp(item, new->pengirim)==0){
+//             break;
+//         }
+//         else{
+//             count++;
+//             new = new->next;
+//         }
+//     }
+//     return count;
+// }
+
+void search(barang_queue *start, char *dicari)
 {
-    int count = 1;
-    *new = **b;
-    while(new->next!=NULL){
-        if(strcmp(item, new->pengirim)==0){
-            break;
+    barang_queue *p;
+    int pos = 1;
+    p = start;
+    while(p!=NULL){
+        if(strcmp(p->pengirim, dicari)==0){
+            printf("\tBarang milik %s ditemukan diposisi %d\n", dicari, pos);
+            return;
         }
-        else{
-            count++;
-            new = new->next;
-        }
+        p=p->next;
+        pos++;
     }
-    return count;
+    printf("Barang milik %s tidak ditemukan\n", dicari);
 }
 
-// bool search(barang_queue *head, char item[10])
+// int search(barang_queue *head, char item[20])
 // {
 //     if(head==NULL){
 //         return false;
@@ -205,17 +228,18 @@ int search(char item[10], barang_queue **b)
 //     return search(head->next, item);
 // }
 
-// void search(char s, barang *head)
+// void search(char s, barang_stack *head)
 // {
-//     barang *p = head;
+//     barang_stack *p = head;
 //     while(p!=NULL){
-//         if(strcmp(s, p->pengirim)){
-//             printf("Barang ditemukan\n");
+//         if(strcmp(s, p->pengirim)==0){
+//             printf("\tBarang ditemukan\n");
 //             break;
 //         }
 //         p->next;
 //     }
 // }
+
 
 int main()
 {
@@ -223,7 +247,8 @@ int main()
     char item[50];
     char s[50][50];
     queue *q;
-    barang_queue *b;
+    barang_stack *b;
+    barang_queue *bq;
     q = malloc(sizeof(queue));
     initialize(q);
     while(1){
@@ -262,7 +287,7 @@ int main()
         }
         else if(ch==5){
             printf("\tBARANG TELAH DIKIRIM KE BALI\n");
-            system("pause");
+            hold();
             while(1){
                 printf("\t=================================\n");
                 printf("\t           GUDANG BALI           \n");
@@ -289,16 +314,17 @@ int main()
             }
         }
         else if(ch==6){
-            printf("Masukan nama pengirim barang yang ingin dicari : ");
+            printf("Masukkan nama pengirim : ");
             fflush(stdin);
             scanf("%[^\n]s", &item);
-            pos = search(item, &b);
-            if(pos<=3){
-                printf("Barang ada pada posisi ke-%d\n", pos);
-            }
-            else{
-                printf("Barang tidak ditemukan\n");
-            }
+            search(q->front, item);
+            // pos = search(item, &b);
+            // if(pos<=3){
+            //     printf("Barang ada pada posisi ke-%d\n", pos);
+            // }
+            // else{
+            //     printf("Barang tidak ditemukan\n");
+            // }
 
             // printf("Masukkan nama pengirim : ");
             // ffush(stdin);
