@@ -185,22 +185,6 @@ void sort(barang_queue *unsorted) {
     }
 }
 
-// int search(char item[20], barang_queue **b)
-// {
-//     int count = 1;
-//     *new = **b;
-//     while(new->next!=NULL){
-//         if(strcmp(item, new->pengirim)==0){
-//             break;
-//         }
-//         else{
-//             count++;
-//             new = new->next;
-//         }
-//     }
-//     return count;
-// }
-
 void search(barang_queue *start, char *dicari)
 {
     barang_queue *p;
@@ -216,30 +200,6 @@ void search(barang_queue *start, char *dicari)
     }
     printf("Barang milik %s tidak ditemukan\n", dicari);
 }
-
-// int search(barang_queue *head, char item[20])
-// {
-//     if(head==NULL){
-//         return false;
-//     }
-//     if(strcmp(head->pengirim, item)==0){
-//         return true;
-//     }
-//     return search(head->next, item);
-// }
-
-// void search(char s, barang_stack *head)
-// {
-//     barang_stack *p = head;
-//     while(p!=NULL){
-//         if(strcmp(s, p->pengirim)==0){
-//             printf("\tBarang ditemukan\n");
-//             break;
-//         }
-//         p->next;
-//     }
-// }
-
 
 int main()
 {
@@ -314,22 +274,10 @@ int main()
             }
         }
         else if(ch==6){
-            printf("Masukkan nama pengirim : ");
+            printf("\tMasukkan nama pengirim : ");
             fflush(stdin);
             scanf("%[^\n]s", &item);
             search(q->front, item);
-            // pos = search(item, &b);
-            // if(pos<=3){
-            //     printf("Barang ada pada posisi ke-%d\n", pos);
-            // }
-            // else{
-            //     printf("Barang tidak ditemukan\n");
-            // }
-
-            // printf("Masukkan nama pengirim : ");
-            // ffush(stdin);
-            // scanf("%[^\n]s", &s);
-            // search(s,b);
         }
         else if(ch==7){
             break;
