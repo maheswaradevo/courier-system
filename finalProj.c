@@ -9,16 +9,18 @@
 #define MAX_TRUCK 3
 #define TRUCK_SIZE 10
 
-typedef struct barang_queue{
+typedef struct barang{
     int data;
     char pengirim[50], penerima[50], alamat[50];
+}barang;
+
+typedef struct barang_queue{
+    barang data;
     struct barang_queue *next;
 }barang_queue;
-barang_queue first, *new;
-barang_queue *gudang = NULL;
+
 typedef struct barang_stack{
-    int data;
-    char pengirim[50], penerima[50], alamat[50];
+    barang data2;
     struct barang_stack *next;
     struct barang_stack *prev;
 }barang_stack;
@@ -172,10 +174,11 @@ void hold()
 void push(int berat, char kirim[], char terima[], char alamat[])
 {
     barang_stack *temp = (barang_stack*)malloc(sizeof(barang_stack));
-    temp->data = berat;
-    strcpy(temp->pengirim, kirim);
-    strcpy(temp->penerima, terima);
-    strcpy(temp->alamat, alamat);
+    // temp->data2->data = berat;
+    temp->data2.data = berat;
+    strcpy(temp->data2.pengirim, kirim);
+    strcpy(temp->data2.penerima, terima);
+    strcpy(temp->data2.alamat, alamat);
     if(isEmpty()==1){
         top = temp;
     }
@@ -205,15 +208,16 @@ void display_stack()
     bantu = top;
     printf("\t Barang : \n");
     if(isEmpty() == 1){
-        printf("\t --KOSONG--\n");
+        printf("--KOSONG--\n");
     }
     else{
         while(bantu!=NULL){
-            printf("\t BARANG\n");
-            printf("\t Nama Pengirim :  %s\n", bantu->pengirim);
-            printf("\t Nama Penerima :  %s\n", bantu->penerima);
-            printf("\t Alamat Penerima :  %s\n", bantu->alamat);
-            printf("\t Berat Barang :  %d\n", bantu->data);
+            printf("\t ===================================\n");
+            printf("\t Nama Pengirim :  %s\n", bantu->data2.pengirim);
+            printf("\t Nama Penerima :  %s\n", bantu->data2.penerima);
+            printf("\t Alamat Penerima :  %s\n", bantu->data2.alamat);
+            printf("\t Berat Barang :  %d\n", bantu->data2.data);
+            printf("\t ===================================\n");
             bantu=bantu->prev;
         }
     }
@@ -239,15 +243,15 @@ void enqueue(queue *q)
         tmp = malloc(sizeof(barang_queue));
         printf("\t Masukkan nama pengirim : ");
         fflush(stdin);
-        scanf("%[^\n]s", tmp->pengirim);
+        scanf("%[^\n]s", tmp->data.pengirim);
         printf("\t Masukkan nama penerima : ");
         fflush(stdin);
-        scanf("%[^\n]s", tmp->penerima);
+        scanf("%[^\n]s", tmp->data.penerima);
         printf("\t Masukkan alamat penerima : ");
         fflush(stdin);
-        scanf("%[^\n]s", tmp->alamat);
+        scanf("%[^\n]s", tmp->data.alamat);
         printf("\t Masukkan berat : ");
-        scanf("%d", &(tmp->data));
+        scanf("%d", &(tmp->data.data));
         tmp->next = NULL;
         if(!isempty(q))
         {
@@ -266,48 +270,107 @@ void enqueue(queue *q)
     }
 }
 
-int dequeue(queue *q)
-{
-    barang_queue *tmp;
-    int n = q->front->data;
-    tmp = q->front;
-    q->front = q->front->next;
-    q->count--;
-    free(tmp);
-    return(n);
-}
+// int dequeue(queue *q)
+// {
+//     barang_queue *tmp;
+//     barang_queue n = q->front->data;
+//     tmp = q->front;
+//     q->front = q->front->next;
+//     q->count--;
+//     free(tmp);
+//     return(n);
+// }
 
 void display(barang_queue *head)
 {
     if(head==NULL){
-        printf("\t NULL\n");
+        printf("\n");
     }
     else{
         printf("\t DATA PENGIRIM DAN PENERIMA\n");
-        printf("\t NAMA PENGIRIM : %s\n", head->pengirim);
-        printf("\t NAMA PENERIMA : %s\n", head->penerima);
-        printf("\t ALAMAT PENERIMA : %s\n", head->alamat);
-        printf("\t BERAT BARANG : %d\n", head->data);
+        printf("\t NAMA PENGIRIM : %s\n", head->data.pengirim);
+        printf("\t NAMA PENERIMA : %s\n", head->data.penerima);
+        printf("\t ALAMAT PENERIMA : %s\n", head->data.alamat);
+        printf("\t BERAT BARANG : %d\n", head->data.data);
         printf("\t ===================================\n");
         display(head->next);
     }
 }
 
-void sort(barang_queue *unsorted) {
-    int banyak_unsorted = 10;
-    barang_queue temp;
-    for (int i = banyak_unsorted - 1; i > 0;i--) {
-        for(int j = 0 ; j < i ; j++) {
-            if (unsorted[j].data < unsorted[j + 1].data) {
-                temp = unsorted[j];
+// void sort(barang_stack *unsorted, int banyak_barang) {
+//     int banyak_unsorted = banyak_barang;
+//     barang_stack temp;
+//     for (int i = banyak_unsorted - 1; i > 0;i--) {
+//         for(int j = 0 ; j < i ; j++) {
+//             if (unsorted[j].data2.data < unsorted[j + 1].data2.data) {
+//                 temp = unsorted[j];
 
-                unsorted[j] = unsorted[j+1];
+//                 unsorted[j] = unsorted[j+1];
 
-                unsorted[j+1] = temp;
+//                 unsorted[j+1] = temp;
 
-            }
-        }
+//             }
+//         }
+//     }
+//     for(int i = 0 ; i <= banyak_barang ; i++){
+//         printf("1. Nama Pengirim : %s\n", unsorted[i].data2.pengirim);
+//         printf("2. Nama Penerima : %s\n", unsorted[i].data2.penerima);
+//         printf("3. Alamat Penerima : %s\n", unsorted[i].data2.alamat);
+//         printf("4. Berat Barang : %d\n", unsorted[i].data2.data);
+//     }
+// }
+
+// void sort (int banyak_barang, queue *q)
+// {
+//     int nodectr;
+//     int ctr;
+//     int temp;
+//     barang_queue *currentNode;
+//     barang_queue *nextNode;
+
+//     for(nodectr = banyak_barang - 2 ; nodectr>=0 ; nodectr--){
+//         currentNode = q->front;
+//         nextNode = currentNode->next;
+
+//         for(ctr=0;ctr<=nodectr;ctr++){
+//             if(currentNode->data.data > nextNode->data.data){
+//                 temp = currentNode->data.data;
+//                 currentNode->data.data = nextNode->data.data;
+//                 nextNode->data.data = temp;
+//             }
+//         }
+//     }
+// }
+
+void swap (barang_queue *a, barang_queue *b)
+{
+    int temp = a->data.data;
+    a->data.data = b->data.data;
+    b->data.data = temp;
+}
+
+void bubble_sort(barang_queue *start)
+{
+    int swapped, i;
+    barang_queue *ptr1;
+    barang_queue *lptr = NULL;
+
+    if(start == NULL){
+        return;
     }
+    do{
+        swapped = 0;
+        ptr1 = start;
+        while(ptr1->next != lptr){
+            if(ptr1->data.data > ptr1->next->data.data){
+                swap(ptr1, ptr1->next);
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    }
+    while(swapped);
 }
 
 void search(barang_queue *start, char *dicari)
@@ -316,7 +379,7 @@ void search(barang_queue *start, char *dicari)
     int pos = 1;
     p = start;
     while(p!=NULL){
-        if(strcmp(p->pengirim, dicari)==0){
+        if(strcmp(p->data.pengirim, dicari)==0){
             printf("\t Barang milik %s ditemukan diposisi %d\n", dicari, pos);
             return;
         }
@@ -328,11 +391,11 @@ void search(barang_queue *start, char *dicari)
 
 int main()
 {   
-    int ch, choice, pos;
+    int ch, choice, pos, banyak_barang;
     char item[50];
     char s[50][50];
+    barang_stack *list_gudang_bali;
     queue *q;
-    barang_stack *b;
     barang_queue *bq;
     q = malloc(sizeof(queue));
     initialize(q);
@@ -353,12 +416,13 @@ int main()
         if(ch==1){
             printf("\t Masukkan data dari barang\n");
             enqueue(q);
+            banyak_barang++;
         }
         else if(ch==2){
             barang_queue *bantu;
             bantu = q->front;
             do{
-                push(bantu->data, bantu->pengirim, bantu->penerima, bantu->alamat);
+                push(bantu->data.data, bantu->data.pengirim, bantu->data.penerima, bantu->data.alamat);
                 bantu = bantu->next;
             }while(bantu!=NULL);
             printf("\t Barang berhasil dimasukan ke truk\n");
@@ -391,7 +455,54 @@ int main()
                     pop();
                 }
                 else if(choice == 3){
-                    sort(b);
+                    bubble_sort(q->front);
+                    display(q->front);
+                }
+                else if(choice == 4){
+                    // char penerima_array[banyak_barang];
+                    // for(int i=0 ;i<=banyak_barang;i++){
+                    //     penerima_array[i] = q->front->data.penerima;
+                    //     bq->next == NULL;
+                    // }
+                    // for(int i=0;i<=banyak_barang;i++){
+                    //     printf("%d. %s\n", i+1, penerima_array[i]);
+                    // }
+                    // char indexing_alamat[banyak_barang+1][50];
+                    // for(int i = 0 ; i < banyak_barang ; i++){
+                    //     if(i=0){
+                    //         strcpy(indexing_alamat[i], "Kantor Kurir");
+                    //         continue;
+                    //     }
+                    //     strcpy(indexing_alamat[i], penerima_array[i]);
+                    // }
+                    // int matriks_ketetanggaan[banyak_barang+1][banyak_barang+1];
+                    // int hubungan;
+                    // for(int i = 0 ; i < banyak_barang ; i++){
+                    //     printf("\tHubungan alamat %s\n", indexing_alamat[i]);
+                    //     printf("\tMasukkan 1 apabila terdapat hubungan, 0 bila tidak\n");
+                    //     for(int j = 0 ; j < banyak_barang ; j++){
+                    //         if(i == j){
+                    //             matriks_ketetanggaan[i][j] = 0;
+                    //             continue;
+                    //         }
+                    //         printf("\tHubungan alamat %s dengan alamat %s : ", indexing_alamat[i], indexing_alamat[j]);
+                    //         scanf("%d", &hubungan);
+                    //         getchar();
+                    //         matriks_ketetanggaan[i][j] = hubungan;
+                    //         matriks_ketetanggaan[j][i] = hubungan;
+                    //     }
+                    // }
+                    // Node *solution = hamilton(banyak_barang + 1, matriks_ketetanggaan);
+                    // if(solution!=NULL){
+                    //     while(solution->next!=NULL){
+                    //         printf("%s", indexing_alamat[solution->kota]);
+                    //         solution = solution->next;
+                    //         if(solution != NULL) printf(" -> ");
+                    //     }
+                    //     printf("%s", indexing_alamat[solution->kota]);
+                    // }
+                    // printf("\n");
+                    // hold();
                 }
                 else if(choice == 5){
                     break;
