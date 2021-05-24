@@ -7,14 +7,20 @@
 #define TRUE 1
 #define FALSE 0
 #define MAX_TRUCK 3
-#define TRUCK_SIZE 10
+#define TRUCK_SIZE 7
 
+int graph[10][10], i, j, vertex;
+int temp_graph[10][10];
+bool eulerPath = true;
+bool eulerCircuit = true;
+bool directed = false;
+int start, finish, vertex, startNode, finishNode;
 typedef struct barang_queue
 {
     int data;
     char pengirim[50], penerima[50], alamat[50];
     struct barang_queue *next;
-}barang_queue;
+} barang_queue;
 
 typedef struct barang_stack
 {
@@ -22,144 +28,19 @@ typedef struct barang_stack
     char pengirim[50], penerima[50], alamat[50];
     struct barang_stack *next;
     struct barang_stack *prev;
-}barang_stack;
-barang_stack *top=NULL;
+} barang_stack;
+barang_stack *top = NULL;
 
 typedef struct queue
 {
     int count;
     barang_queue *front;
     barang_queue *rear;
-}queue;
+} queue;
 
-typedef struct Node {
-    struct Node *next;
-    struct Node *prev;
-    int kota;
-    int hubungan_ketetanggan;
-    int node_divisit[100];
-} Node;
-
-Node *hamilton(int jumlah_node, int matriks_ketetanggaan[][jumlah_node]) {
-
-    int awal = 0, stop, skip, sol_set_tersedia = 0, node_sebelum = -1;
-    int node_dalam_stack; // * keperluan print node saja
-    Node *list_temp_solution;
-    Node *head;
-    Node *tail;
-    Node *solution_set = (Node*) malloc (sizeof(Node) * jumlah_node);
-
-    // * list_temp_solution ini maksudnya solutionset yang dibuat jadi LinkedList
-    list_temp_solution = (Node*) malloc(sizeof(Node));
-    list_temp_solution->hubungan_ketetanggan = 0;
-    list_temp_solution->kota = awal;
-    list_temp_solution->next = NULL;
-    list_temp_solution->prev = NULL;
-
-    // * ini inisialisasi ngasi tau bahwa setiap node BELUM penrah divisit
-    // * karena nanti pakai backtracking.
-    for (int i = 0; i < jumlah_node; i++) {
-        list_temp_solution->node_divisit[i] = 0;
-    }
-
-    // * circular doubly linkedlist
-    head = list_temp_solution;
-    tail = list_temp_solution;
-
-    // * stop kalok misalkan dia kembali ke awal dan semua tetangga ada di solution set (success)
-    // * atau kembali ke awal dan semua tetangga sudah di visit, tetapi tidak semua ada di solution set (fail)
-    stop = 0;
-    // * skip = 0 itu artinya kalau ditemuin tetangga yang belum pernah divisit
-    skip = 0;
-    while (stop == 0) {
-
-        list_temp_solution = head;
-        node_dalam_stack = 1;
-        // * ini untuk keperuan ngeprint node saja, ngecek berapa jumlah node didalam linkedlist solution set
-        while (list_temp_solution->next != NULL) {
-            list_temp_solution = list_temp_solution->next;
-            node_dalam_stack++;
-        }
-        // * reset state skip
-        skip = 0;
-        // * for loop untuk ngecek tetangga apakah dia sudah pernah divsit oleh node yang sedang ditunjuk
-        for (int i = 0; i < jumlah_node; i++) {
-            // * kalok ketemu tetangga, dia bukan node awal, belum di skip, brarti gass cek
-            if (i != tail->kota && matriks_ketetanggaan[tail->kota][i] > 0 && i != awal && skip == 0) {
-                list_temp_solution = head;
-                // * node_sebelum = 0 itu artinya node yang ditunjuk belum ada di solution set
-                node_sebelum = 0;
-                while (list_temp_solution->next != NULL) {
-                    list_temp_solution = list_temp_solution->next;
-                    if (list_temp_solution->kota == i) {
-                        node_sebelum = 1;
-                        break;
-                    }
-                }
-                if (list_temp_solution->node_divisit[i] == 1) {
-                    node_sebelum = 1;
-                }
-                // ? kenapa make array?
-                if (node_sebelum == 0) {
-                    list_temp_solution = (Node*) malloc(sizeof(Node));
-
-                    list_temp_solution->hubungan_ketetanggan = matriks_ketetanggaan[tail->kota][i];
-                    list_temp_solution->kota = i;
-                    list_temp_solution->prev = tail;
-                    tail->next = list_temp_solution;
-                    tail->node_divisit[i] = 1;
-                    list_temp_solution->next = NULL;
-                    tail = list_temp_solution;
-
-                    for (int j = 0; j < jumlah_node; j++) {
-                        list_temp_solution->node_divisit[j] = 0;
-                    }
-
-                    list_temp_solution = head;
-
-                    skip = 1;
-                }
-                // * ini else if untuk misalkan solusi ditemukan 
-                // * kalok yang lagi diperiksa == awal, dan nodeDalam solution set sama dengan jumlah node
-            } 
-            else if (i == awal && node_dalam_stack == jumlah_node && matriks_ketetanggaan[tail->kota][i] > 0) {
-                list_temp_solution = (Node*) malloc(sizeof(Node));
-
-                list_temp_solution->hubungan_ketetanggan = matriks_ketetanggaan[tail->kota][i];
-                list_temp_solution->kota = i;
-                list_temp_solution->prev = tail;
-                tail->next = list_temp_solution;
-                list_temp_solution->next = NULL;
-                tail = list_temp_solution;
-
-                list_temp_solution = head;
-                skip = 1;
-                stop = 1;
-            }
-        }
-        // * atau kalok kembali ke awal tetapi solutionset belum sebanyak jumlah kota
-        // * atau jalan buntu tetapi belum kembali ke awal
-        if (skip == 0) {
-            if (tail->prev != NULL) {
-                list_temp_solution = tail->prev;
-                list_temp_solution->next = NULL;
-                
-                free(tail);
-                tail = list_temp_solution;
-                // * ini kalok gagal
-            } else {
-                printf("\n\tMohon, maaf. Sistem graph tidak dapat menentukan alamat secara otomatis. Silakan pakai otak Anda sendiri\n");
-                stop = 1;
-                return NULL;
-            }
-        }
-        printf("\n");
-    }
-    return head;
-}
 int isEmpty()
 {
-    if(top==NULL)
+    if (top == NULL)
         return 1;
     else
         return 0;
@@ -167,17 +48,19 @@ int isEmpty()
 
 void push(int berat, char kirim[], char terima[], char alamat[])
 {
-    barang_stack *temp = (barang_stack*)malloc(sizeof(barang_stack));
+    barang_stack *temp = (barang_stack *)malloc(sizeof(barang_stack));
     temp->prev = NULL;
     temp->next = NULL;
     temp->data = berat;
     strcpy(temp->pengirim, kirim);
     strcpy(temp->penerima, terima);
     strcpy(temp->alamat, alamat);
-    if(isEmpty()==1){
+    if (isEmpty() == 1)
+    {
         top = temp;
     }
-    else{
+    else
+    {
         top->next = temp;
         temp->prev = top;
         top = temp;
@@ -188,12 +71,14 @@ void pop()
 {
     barang_stack *hapus;
     hapus = top;
-    if(isEmpty()==1){
+    if (isEmpty() == 1)
+    {
         printf("Tidak ada barang\n");
     }
-    else{
-        top = top -> prev;
-        free(hapus); 
+    else
+    {
+        top = top->prev;
+        free(hapus);
     }
 }
 
@@ -202,11 +87,14 @@ void display_stack()
     barang_stack *bantu;
     bantu = top;
     printf("\t Barang : \n");
-    if(isEmpty() == 1){
+    if (isEmpty() == 1)
+    {
         printf("--KOSONG--\n");
     }
-    else{
-        while(bantu != NULL){
+    else
+    {
+        while (bantu != NULL)
+        {
             printf("\t ===================================\n");
             printf("\t Nama Pengirim :  %s\n", bantu->pengirim);
             printf("\t Nama Penerima :  %s\n", bantu->penerima);
@@ -248,7 +136,7 @@ void enqueue(queue *q)
         printf("\t Masukkan berat : ");
         scanf("%d", &(tmp->data));
         tmp->next = NULL;
-        if(!isempty(q))
+        if (!isempty(q))
         {
             q->rear->next = tmp;
             q->rear = tmp;
@@ -273,15 +161,17 @@ int dequeue(queue *q)
     q->front = q->front->next;
     q->count--;
     free(tmp);
-    return(n);
+    return (n);
 }
 
 void display(barang_queue *head)
 {
-    if(head==NULL){
-        printf("NULL\n");
+    if (head == NULL)
+    {
+        printf("\t Tidak Ada Barang Lagi\n");
     }
-    else{
+    else
+    {
         printf("\t DATA PENGIRIM DAN PENERIMA\n");
         printf("\t NAMA PENGIRIM : %s\n", head->pengirim);
         printf("\t NAMA PENERIMA : %s\n", head->penerima);
@@ -291,24 +181,12 @@ void display(barang_queue *head)
         display(head->next);
     }
 }
-// void display_sort(barang *head)
-// {   
-//     int count = 1;
-//     printf("Sorting Berdasarkan Berat Benda\n");
-//     if(head==NULL){
-//         printf("NULL\n");
-//     }
-//     else{
-//         printf("%d. Barang dengan berat %d\n", count, head->data);
-//         display(head->next->data);
-//     }
-// }
-void swap (barang_queue *a, barang_queue *b)
+
+void swap(barang_queue *a, barang_queue *b)
 {
-    barang_queue temp;
-    temp = *a;
-    *a = *b;
-    *b = temp;
+    int temp = a->data;
+    a->data = b->data;
+    b->data = temp;
 }
 
 void bubble_sort(barang_queue *start)
@@ -317,22 +195,38 @@ void bubble_sort(barang_queue *start)
     barang_queue *ptr1;
     barang_queue *lptr = NULL;
 
-    if(start == NULL){
+    if (start == NULL)
+    {
         return;
     }
-    do{
+    do
+    {
         swapped = 0;
         ptr1 = start;
-        while(ptr1->next != lptr){
-            if(ptr1->data > ptr1->next->data){
-                swap(&ptr1, &(ptr1->next));
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->data > ptr1->next->data)
+            {
+                swap(ptr1, ptr1->next);
                 swapped = 1;
             }
             ptr1 = ptr1->next;
         }
         lptr = ptr1;
+    } while (swapped);
+}
+
+void display_sort(barang_queue *head)
+{
+    if (head == NULL)
+    {
+        printf("\t Tidak Ada Barang Lagi\n");
     }
-    while(swapped);
+    else
+    {
+        printf("\t --%d\n", head->data);
+        display_sort(head->next);
+    }
 }
 
 void search(barang_queue *start, char *dicari)
@@ -340,137 +234,317 @@ void search(barang_queue *start, char *dicari)
     barang_queue *p;
     int pos = 1;
     p = start;
-    while(p!=NULL){
-        if(strcmp(p->pengirim, dicari)==0){
+    while (p != NULL)
+    {
+        if (strcmp(p->pengirim, dicari) == 0)
+        {
             printf("\t Barang milik %s ditemukan diposisi %d\n", dicari, pos);
             return;
         }
-        p=p->next;
+        p = p->next;
         pos++;
     }
     printf("\t Barang milik %s tidak ditemukan\n", dicari);
 }
 
+void hasEulerPath(int node[vertex][vertex], int in[vertex], int out[vertex])
+{
+    int odd = 0;
+    int even = 0;
+    if (vertex < 2)
+    {
+        eulerCircuit = false;
+        eulerPath = false;
+    }
+    else if (vertex == 2 && (node[0][1] == 1 || node[1][0] == 1))
+    {
+        eulerCircuit = false;
+        eulerPath = true;
+        if (node[0][1] == 1 && node[1][0] == 0)
+            startNode = 0;
+        else
+            startNode = 1;
+    }
+    else
+    {
+        if (directed == false)
+        {
+            for (int i = 0; i < vertex; i++)
+            {
+                if (in[i] % 2 != 0)
+                {
+                    odd++;
+                    if (odd == 1)
+                        startNode = i;
+                    if (odd == 2)
+                        finishNode = i;
+                    if (odd > 2)
+                    {
+                        eulerCircuit = false;
+                        eulerPath = false;
+                        break;
+                    }
+                }
+            }
+            if (odd == 0)
+            {
+                startNode = 0;
+                finishNode = 0;
+            }
+            if (odd > 2 || odd == 1)
+                eulerPath = false;
+            if (odd > 0)
+                eulerCircuit = false;
+        }
+
+        else
+        {
+            for (int i = 0; i < vertex; i++)
+            {
+                if (out[i] - in[i] == 1)
+                {
+                    start++;
+                    if (start = 1)
+                        startNode = i;
+
+                    if (start > 1)
+                    {
+                        eulerPath = false;
+                        eulerCircuit = false;
+                        break;
+                    }
+                }
+                if (in[i] - out[i] == 1)
+                {
+                    finish++;
+                    if (finish == 1)
+                        finishNode = i;
+
+                    if (finish > 1)
+                    {
+                        eulerPath = false;
+                        eulerCircuit = false;
+                        break;
+                    }
+                }
+                if (in[i] == out[i])
+                    even++;
+                if (even != vertex && start == 1)
+                    eulerCircuit = false;
+            }
+        }
+    }
+    if (eulerPath == true)
+    {
+        printf("\t EULER PATH FOUND!\n");
+        printf("\t Start Node : %d\n", startNode + 1);
+        printf("\t Finish Node: %d\n", finishNode + 1);
+    }
+    else
+        printf("\t EULER PATH NOT FOUND!\n");
+    if (eulerCircuit == true)
+        printf("\t EULER CIRCUIT FOUND!\n");
+    else
+        printf("\t EULER CIRCUIT NOT FOUND!\n");
+}
+
 int main()
-{   
-    int ch, choice, pos, banyak_barang;
+{
+    int ch, choice, pos, banyak_barang, i, j;
     char item[50];
     char s[50][50];
     queue *q;
     barang_stack *bq;
     q = malloc(sizeof(queue));
     initialize(q);
-    while(1){
+    while (1)
+    {
         printf("\t=================================\n");
         printf("\t           GUDANG JAWA           \n");
         printf("\t=================================\n");
         printf("\t 1. Input barang ke gudang\n");
-        printf("\t 2. Masukkan barang ke truck\n");
-        printf("\t 3. Lihat barang di antrian\n");
-        printf("\t 4. Lihat barang di truk\n");
-        printf("\t 5. Kirim barang ke Bali\n");
-        printf("\t 6. Cari barang\n");
-        printf("\t 7. Keluar\n");  
+        printf("\t 2. Hapus barang dari antrian\n");
+        printf("\t 3. Masukkan barang ke truck\n");
+        printf("\t 4. Lihat barang di antrian\n");
+        printf("\t 5. Lihat barang di truk\n");
+        printf("\t 6. Kirim barang ke Bali\n");
+        printf("\t 7. Cari barang\n");
+        printf("\t 8. Keluar\n");
         printf("\t=================================\n");
         printf("\t Input : ");
         scanf("%d", &ch);
-        if(ch==1){
-            printf("\t Masukkan data dari barang\n");
-            enqueue(q);
-            banyak_barang++;
+        if (ch == 1)
+        {
+            while (banyak_barang <= TRUCK_SIZE)
+            {
+                printf("\t Masukkan data dari barang\n");
+                enqueue(q);
+                banyak_barang++;
+                printf("\t=================================\n");
+            }
         }
-        else if(ch==2){
+        else if (ch == 2)
+        {
+            dequeue(q);
+        }
+        else if (ch == 3)
+        {
             barang_queue *bantu;
             bantu = q->front;
-            do{
+            do
+            {
                 push(bantu->data, bantu->pengirim, bantu->penerima, bantu->alamat);
                 bantu = bantu->next;
-            }while(bantu!=NULL);
+            } while (bantu != NULL);
             printf("\t Barang berhasil dimasukan ke truk\n");
         }
-        else if(ch==3){
+        else if (ch == 4)
+        {
             printf("\t ===================================\n");
             display(q->front);
         }
-        else if(ch==4){
+        else if (ch == 5)
+        {
             display_stack();
         }
-        else if(ch==5){
-            printf("\t BARANG TELAH DIKIRIM KE BALI\n");
-            while(1){
-                printf("\t=================================\n");
-                printf("\t           GUDANG BALI           \n");
-                printf("\t=================================\n");
-                printf("\t 1. Cek barang di truk\n");
-                printf("\t 2. Urutkan barang\n");
-                printf("\t 3. Kirim barang ke pelanggan\n");
-                printf("\t 4. Keluar\n");
-                printf("\t Input : ");
-                scanf("%d", &choice);
-                if(choice == 1){
-                    display_stack();
-                }
-                else if(choice == 2){
-                    bubble_sort(q->front);
-                    display(q->front);
-                }
-                else if(choice == 3){
-                    // char penerima_array[banyak_barang];
-                    // for(int i=0 ;i<=banyak_barang;i++){
-                    //     penerima_array[i] = q->front->data.penerima;
-                    //     bq->next == NULL;
-                    // }
-                    // for(int i=0;i<=banyak_barang;i++){
-                    //     printf("%d. %s\n", i+1, penerima_array[i]);
-                    // }
-                    // char indexing_alamat[banyak_barang+1][50];
-                    // for(int i = 0 ; i < banyak_barang ; i++){
-                    //     if(i=0){
-                    //         strcpy(indexing_alamat[i], "Kantor Kurir");
-                    //         continue;
-                    //     }
-                    //     strcpy(indexing_alamat[i], penerima_array[i]);
-                    // }
-                    // int matriks_ketetanggaan[banyak_barang+1][banyak_barang+1];
-                    // int hubungan;
-                    // for(int i = 0 ; i < banyak_barang ; i++){
-                    //     printf("\tHubungan alamat %s\n", indexing_alamat[i]);
-                    //     printf("\tMasukkan 1 apabila terdapat hubungan, 0 bila tidak\n");
-                    //     for(int j = 0 ; j < banyak_barang ; j++){
-                    //         if(i == j){
-                    //             matriks_ketetanggaan[i][j] = 0;
-                    //             continue;
-                    //         }
-                    //         printf("\tHubungan alamat %s dengan alamat %s : ", indexing_alamat[i], indexing_alamat[j]);
-                    //         scanf("%d", &hubungan);
-                    //         getchar();
-                    //         matriks_ketetanggaan[i][j] = hubungan;
-                    //         matriks_ketetanggaan[j][i] = hubungan;
-                    //     }
-                    // }
-                    // Node *solution = hamilton(banyak_barang + 1, matriks_ketetanggaan);
-                    // if(solution!=NULL){
-                    //     while(solution->next!=NULL){
-                    //         printf("%s", indexing_alamat[solution->kota]);
-                    //         solution = solution->next;
-                    //         if(solution != NULL) printf(" -> ");
-                    //     }
-                    //     printf("%s", indexing_alamat[solution->kota]);
-                    // }
-                    // printf("\n");
-                }
-                else if(choice == 4){
-                    exit(1);
+        else if (ch == 6)
+        {
+            if (banyak_barang = TRUCK_SIZE)
+            {
+                printf("\t BARANG TELAH DIKIRIM KE BALI\n");
+                while (1)
+                {
+                    printf("\t=================================\n");
+                    printf("\t           GUDANG BALI           \n");
+                    printf("\t=================================\n");
+                    printf("\t 1. Cek barang di truk\n");
+                    printf("\t 2. Urutkan barang\n");
+                    printf("\t 3. Kirim barang ke pelanggan\n");
+                    printf("\t 4. Keluar\n");
+                    printf("\t Input : ");
+                    scanf("%d", &choice);
+                    if (choice == 1)
+                    {
+                        display_stack();
+                    }
+                    else if (choice == 2)
+                    {
+                        bubble_sort(q->front);
+                        printf("\t Sort Barang Berdasarkan Berat\n");
+                        display_sort(q->front);
+                    }
+                    else if (choice == 3)
+                    {
+                        int allVisited = 0;
+                        vertex = TRUCK_SIZE;
+                        int node[vertex][vertex];
+                        printf("\t Masukkan 1 apabila terhubung \n");
+                        printf("\t Masukkan 0 jika tidak terhubung \n");
+                        for (i = 0; i < vertex; i++)
+                        {
+                            for (j = 0; j < vertex; j++)
+                            {
+                                if (i != j)
+                                {
+                                    printf("\t Alamat ke-%d dan alamat ke-%d: ", i + 1, j + 1);
+                                    scanf("%d", &node[i][j]);
+                                }
+                                else
+                                {
+                                    node[i][j] = 0;
+                                }
+                            }
+                        }
+                        printf("\t Tampilan Matriks : \n");
+                        for (i = 0; i < vertex; i++)
+                        {
+                            for (j = 0; j < vertex; j++)
+                            {
+                                printf("\t %d ", node[i][j]);
+                            }
+                            printf("\n");
+                        }
+                        if (vertex < 2)
+                            printf("\t Tidak Ada Graph yang terbentuk!\n");
+                        else
+                        {
+                            int outdegree[vertex];
+                            for (i = 0; i < vertex; i++)
+                            {
+                                outdegree[i] = 0;
+                                for (j = 0; j < vertex; j++)
+                                {
+                                    if (node[i][j] == 1)
+                                    {
+                                        outdegree[i]++;
+                                    }
+                                }
+                            }
+                            int indegree[vertex];
+                            for (j = 0; j < vertex; j++)
+                            {
+                                indegree[j] = 0;
+                                for (i = 0; i < vertex; i++)
+                                {
+                                    if (node[i][j] == 1)
+                                    {
+                                        indegree[j]++;
+                                    }
+                                }
+                            }
+                            if (directed == true)
+                                printf("\t Berarah!\n");
+                            else
+                                printf("\t Tidak Berarah!\n");
+                            hasEulerPath(node, indegree, outdegree);
+                            if (eulerPath == true)
+                            {
+                                printf("\n\t Rute Euler:\n");
+                                j = startNode;
+                                while (allVisited != 1)
+                                {
+                                    for (i = vertex - 1; i >= 0; i--)
+                                    {
+                                        if (node[j][i] == 1)
+                                        {
+                                            if (startNode > -1)
+                                            {
+                                                printf("%d -> %d", j + 1, i + 1);
+                                                startNode = -1;
+                                            }
+                                            else
+                                                printf(", %d -> %d", j + 1, i + 1);
+                                            node[j][i] = 0;
+                                            node[i][j] = 0;
+                                            j = i;
+                                            break;
+                                        }
+                                        else if (j == finishNode && i == 0 && node[j][i] == 0)
+                                        {
+                                            allVisited = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (choice == 4)
+                    {
+                        exit(1);
+                    }
                 }
             }
         }
-        else if(ch==6){
+        else if (ch == 7)
+        {
             printf("\t Masukkan nama pengirim : ");
             fflush(stdin);
             scanf("%[^\n]s", &item);
             search(q->front, item);
         }
-        else if(ch==7){
+        else if (ch == 8)
+        {
             break;
         }
     }
