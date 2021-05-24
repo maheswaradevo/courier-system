@@ -238,13 +238,13 @@ void search(barang_queue *start, char *dicari)
     {
         if (strcmp(p->pengirim, dicari) == 0)
         {
-            printf("\t Barang milik %s ditemukan diposisi %d\n", dicari, pos);
+            printf("\t Barang yang dikirim oleh %s ditemukan diposisi %d\n", dicari, pos);
             return;
         }
         p = p->next;
         pos++;
     }
-    printf("\t Barang milik %s tidak ditemukan\n", dicari);
+    printf("\t Barang yang dikirim oleh %s tidak ditemukan\n", dicari);
 }
 
 void hasEulerPath(int node[vertex][vertex], int in[vertex], int out[vertex])
@@ -350,16 +350,16 @@ void hasEulerPath(int node[vertex][vertex], int in[vertex], int out[vertex])
 
 int main()
 {
-    int ch, choice, pos, banyak_barang, i, j;
+    int ch, choice, pos, i, j;
+    int banyak_truk = 1;
+    int banyak_barang = 1;
     char item[50];
-    char s[50][50];
     queue *q;
-    barang_stack *bq;
     q = malloc(sizeof(queue));
     initialize(q);
     title();
     name();
-    while (1)
+    while (banyak_truk <= MAX_TRUCK)
     {
         printf("\t=================================\n");
         printf("\t           GUDANG JAWA           \n");
@@ -411,9 +411,10 @@ int main()
         }
         else if (ch == 6)
         {
-            if (banyak_barang = TRUCK_SIZE)
+            if ((banyak_barang = TRUCK_SIZE) && (banyak_truk <= 3))
             {
                 printf("\t BARANG TELAH DIKIRIM KE BALI\n");
+                banyak_truk++;
                 while (1)
                 {
                     printf("\t=================================\n");
