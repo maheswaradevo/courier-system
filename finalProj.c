@@ -9,12 +9,12 @@
 #define MAX_TRUCK 3
 #define TRUCK_SIZE 7
 
-int graph[10][10], i, j, vertex;
-int temp_graph[10][10];
 bool eulerPath = true;
 bool eulerCircuit = true;
 bool directed = false;
 int start, finish, vertex, startNode, finishNode;
+void title();
+void name();
 typedef struct barang_queue
 {
     int data;
@@ -220,7 +220,7 @@ void display_sort(barang_queue *head)
 {
     if (head == NULL)
     {
-        printf("\t Tidak Ada Barang Lagi\n");
+        printf(" ");
     }
     else
     {
@@ -336,16 +336,16 @@ void hasEulerPath(int node[vertex][vertex], int in[vertex], int out[vertex])
     }
     if (eulerPath == true)
     {
-        printf("\t EULER PATH FOUND!\n");
+        printf("\t Jalur Euler Ditemukan\n");
         printf("\t Start Node : %d\n", startNode + 1);
         printf("\t Finish Node: %d\n", finishNode + 1);
     }
     else
-        printf("\t EULER PATH NOT FOUND!\n");
+        printf("\t Jalur Euler Tidak Ditemukan\n");
     if (eulerCircuit == true)
-        printf("\t EULER CIRCUIT FOUND!\n");
+        printf("\t Sirkuit Euler Ditemukan\n");
     else
-        printf("\t EULER CIRCUIT NOT FOUND!\n");
+        printf("\t Sirkuit Euler Tidak Ditemukan\n");
 }
 
 int main()
@@ -357,6 +357,8 @@ int main()
     barang_stack *bq;
     q = malloc(sizeof(queue));
     initialize(q);
+    title();
+    name();
     while (1)
     {
         printf("\t=================================\n");
@@ -549,4 +551,21 @@ int main()
         }
     }
     return 0;
+}
+void title()
+{
+    printf("\t +--------------------------------------------------------------------------------+\n");
+    printf("\t |                         FINAL PROJECT STRUKTUR DATA                            |\n");
+    printf("\t |                               COURIER SYSTEM                                   |\n");
+    printf("\t +--------------------------------------------------------------------------------+\n");
+}
+
+void name()
+{
+    printf("\t |OLEH: PANDE PUTU DEVO PUNDA MAHESWARA                                2008561107 |\n");
+    printf("\t |      MADE KRISNA DWIPA JAYA                                         2008561106 |\n");
+    printf("\t |      RONALDITO JUAN BANTARAS TARIGAN                                2008561108 |\n");
+    printf("\t |      I DEWA GDE PUTRA ANGA BIARA                                    2008561105 |\n");
+    printf("\t +--------------------------------------------------------------------------------+\n");
+    printf("\n");
 }
