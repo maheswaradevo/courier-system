@@ -3,7 +3,6 @@
 #include <malloc.h>
 #include <string.h>
 #include <stdbool.h>
-#include <ctype.h>
 #define TRUE 1
 #define FALSE 0
 #define MAX_TRUCK 3
