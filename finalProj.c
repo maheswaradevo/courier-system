@@ -88,7 +88,7 @@ void display_stack()
     printf("\t Barang : \n");
     if (isEmpty() == 1)
     {
-        printf("--KOSONG--\n");
+        printf("\t --KOSONG--\n");
     }
     else
     {
@@ -511,11 +511,11 @@ int main()
                                         {
                                             if (startNode > -1)
                                             {
-                                                printf("%d -> %d", j + 1, i + 1);
+                                                printf("\t %d -> %d\n", j + 1, i + 1);
                                                 startNode = -1;
                                             }
                                             else
-                                                printf(", %d -> %d", j + 1, i + 1);
+                                                printf("\t %d -> %d\n", j + 1, i + 1);
                                             node[j][i] = 0;
                                             node[i][j] = 0;
                                             j = i;
